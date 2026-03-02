@@ -160,7 +160,7 @@ header .title {
     }
 
     .category-dropdown button {
-        padding: 8px 16px;
+        padding: 8px 14px;
         font-size: 14px;
     }
     
@@ -225,40 +225,61 @@ header .title {
     background-color: #16302c;
 }
 
-/* ===== DROPDOWN ===== */
+/* ===== PROFESSIONAL DROPDOWN ===== */
+
+.category-dropdown {
+    position: relative;
+}
+
 .category-dropdown button {
-    padding: 10px 20px;
-    background-color: #1e3f3a;
+    padding: 10px 18px;
+    font-size: 15px;
+    background: linear-gradient(145deg, #1e3f3a, #16302c);
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .category-dropdown button:hover {
-    background-color: #16302c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
+/* Dropdown menu */
 .dropdown-content {
-    display: none;
     position: absolute;
+    top: 110%;
     right: 0;
-    background: rgba(30, 63, 58, 0.95);
+    background: rgba(20, 35, 33, 0.98);
+    backdrop-filter: blur(6px);
     border-radius: 10px;
-    margin-top: 10px;
     overflow: hidden;
-    min-width: 150px;
+    min-width: 160px;
+
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+}
+
+/* When active */
+.dropdown-content.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-content div {
-    padding: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: background 0.2s ease;
 }
 
 .dropdown-content div:hover {
-    background-color: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
 }
 
 </style>
@@ -360,6 +381,41 @@ let cardFiles = [
     { name: "Charizard", file: "Karta 15.jpg", category: "Fire" }
 ];
 
+// ===== SLOT CREATION WITH WORKING BUTTON =====
+function addSlot(src) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    
+    if(src) {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Card';
+        slot.appendChild(img);
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Download';
+        btn.onclick = () => downloadCard(img.src); // use the img.src dynamically
+        slot.appendChild(btn);
+    } else {
+        const div = document.createElement('div');
+        div.style.height = '150px';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.justifyContent = 'center';
+        div.textContent = 'IN PROGRESS';
+        slot.appendChild(div);
+
+        const btn = document.createElement('button');
+        btn.disabled = true;
+        btn.textContent = 'Download';
+        slot.appendChild(btn);
+    }
+    collectionGrid.appendChild(slot);
+
+    // Fade-in animation delay
+    setTimeout(() => slot.style.opacity = 1, 100);
+}
+
 // Load initial cards and fill 10 slots
 loadCards(cardFiles);
 
@@ -422,7 +478,7 @@ function searchCards() {
 // ===== DROPDOWN TOGGLE =====
 function toggleDropdown() {
     const menu = document.getElementById("dropdownMenu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+    menu.classList.toggle("active");
 }
 
 // ===== FILTER BY CATEGORY =====
@@ -443,14 +499,18 @@ function filterCategory(category) {
     // close dropdown
     document.getElementById("dropdownMenu").style.display = "none";
 }
-    
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function(event) {
+    const dropdown = document.querySelector(".category-dropdown");
+    const menu = document.getElementById("dropdownMenu");
+
+    if (!dropdown.contains(event.target)) {
+        menu.classList.remove("active");
+    }
+});
+
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
