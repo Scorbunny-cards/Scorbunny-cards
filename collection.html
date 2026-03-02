@@ -199,6 +199,50 @@ header {
     background-color: #16302c;
 }
 
+/* ===== TOP BAR ===== */
+.top-bar {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    z-index: 3;
+}
+
+/* ===== DROPDOWN ===== */
+.category-dropdown button {
+    padding: 10px 20px;
+    background-color: #1e3f3a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.category-dropdown button:hover {
+    background-color: #16302c;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: rgba(30, 63, 58, 0.95);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+    min-width: 150px;
+}
+
+.dropdown-content div {
+    padding: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.dropdown-content div:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
 </style>
 </head>
 
@@ -214,6 +258,19 @@ header {
 
 <div class="collection-grid" id="collectionGrid">
     <!-- Slots will be dynamically generated -->
+</div>
+
+<div class="top-bar">
+    <div class="category-dropdown">
+        <button onclick="toggleDropdown()">Categories ▼</button>
+        <div class="dropdown-content" id="dropdownMenu">
+            <div onclick="filterCategory('All')">All</div>
+            <div onclick="filterCategory('Water')">Water</div>
+            <div onclick="filterCategory('Fire')">Fire</div>
+            <div onclick="filterCategory('Dark')">Dark</div>
+            <div onclick="filterCategory('More')">More</div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -267,21 +324,21 @@ const collectionGrid = document.getElementById('collectionGrid');
 
 // Example card files
 let cardFiles = [
-    { name: "Dragonair", file: "Karta 1.jpg" },
-    { name: "Litleo", file: "Karta 2.jpg" },
-    { name: "Nidoking", file: "Karta 3.jpg" },
-    { name: "Munna", file: "Karta 4.jpg" },
-    { name: "Lucario", file: "Karta 5.jpg" },
-    { name: "Infernape", file: "Karta 6.jpg" },
-    { name: "Tatsugiri", file: "Karta 7.jpg" },
-    { name: "Mudsdale", file: "Karta 8.jpg" },
-    { name: "Noivern", file: "Karta 9.jpg" },
-    { name: "Wishiwashi", file: "Karta 10.jpg" },
-    { name: "Koffing", file: "Karta 11.jpg" },
-    { name: "Lycanroc", file: "Karta 12.jpg" },
-    { name: "Charizard", file: "Karta 13.jpg" },
-    { name: "Umbreon", file: "Karta 14.jpg" },
-    { name: "Charizard", file: "Karta 15.jpg" }
+    { name: "Dragonair", file: "Karta 1.jpg", category: "Water" },
+    { name: "Litleo", file: "Karta 2.jpg", category: "Fire" },
+    { name: "Nidoking", file: "Karta 3.jpg", category: "More" },
+    { name: "Munna", file: "Karta 4.jpg", category: "Dark" },
+    { name: "Lucario", file: "Karta 5.jpg", category: "More"},
+    { name: "Infernape", file: "Karta 6.jpg", category: "Fire" },
+    { name: "Tatsugiri", file: "Karta 7.jpg", category: "Water" },
+    { name: "Mudsdale", file: "Karta 8.jpg", category: "More" },
+    { name: "Noivern", file: "Karta 9.jpg", category: "Dark" },
+    { name: "Wishiwashi", file: "Karta 10.jpg", category: "Water" },
+    { name: "Koffing", file: "Karta 11.jpg", category: "Dark" },
+    { name: "Lycanroc", file: "Karta 12.jpg", category: "More" },
+    { name: "Charizard", file: "Karta 13.jpg", category: "Fire" },
+    { name: "Umbreon", file: "Karta 14.jpg", category: "Dark" },
+    { name: "Charizard", file: "Karta 15.jpg", category: "Fire" }
 ];
 
 // ===== SLOT CREATION WITH WORKING BUTTON =====
@@ -378,11 +435,32 @@ function searchCards() {
     loadCards(filtered);
 }
 
+// ===== DROPDOWN TOGGLE =====
+function toggleDropdown() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// ===== FILTER BY CATEGORY =====
+function filterCategory(category) {
+
+    let filtered;
+
+    if (category === "All") {
+        filtered = cardFiles;
+    } else {
+        filtered = cardFiles.filter(card =>
+            card.category === category
+        );
+    }
+
+    loadCards(filtered);
+
+    // close dropdown
+    document.getElementById("dropdownMenu").style.display = "none";
+}
+    
 </script>
 
 </body>
 </html>
-
-
-
-
