@@ -36,8 +36,10 @@ body {
 
 /* ===== HEADER ===== */
 header {
-    text-align: center;
-    padding: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
     font-family: 'Heavitas', sans-serif;
     font-size: 36px;
     color: #5b8c7c;
@@ -154,6 +156,12 @@ header {
     }
 }
 
+header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+}
+    
 /* ===== Smaller Categories Button ===== */
 .category-dropdown button {
     padding: 8px 16px;
@@ -225,14 +233,6 @@ header {
     background-color: #16302c;
 }
 
-/* ===== TOP BAR ===== */
-.top-bar {
-    position: absolute;
-    top: 30px;
-    right: 50px;
-    z-index: 3;
-}
-
 /* ===== DROPDOWN ===== */
 .category-dropdown button {
     padding: 10px 20px;
@@ -276,17 +276,9 @@ header {
 
 <canvas id="spaceCanvas"></canvas>
 
-<header>FULL COLLECTION</header>
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search card name...">
-    <button onclick="searchCards()">Search</button>
-</div>
+<header>
+    <div>FULL COLLECTION</div>
 
-<div class="collection-grid" id="collectionGrid">
-    <!-- Slots will be dynamically generated -->
-</div>
-
-<div class="top-bar">
     <div class="category-dropdown">
         <button onclick="toggleDropdown()">Categories ▼</button>
         <div class="dropdown-content" id="dropdownMenu">
@@ -297,6 +289,15 @@ header {
             <div onclick="filterCategory('More')">More</div>
         </div>
     </div>
+</header>
+    
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search card name...">
+    <button onclick="searchCards()">Search</button>
+</div>
+
+<div class="collection-grid" id="collectionGrid">
+    <!-- Slots will be dynamically generated -->
 </div>
 
 <script>
@@ -490,4 +491,5 @@ function filterCategory(category) {
 
 </body>
 </html>
+
 
