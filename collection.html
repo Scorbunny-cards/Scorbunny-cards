@@ -1,368 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Full Collection</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Collection | Scorbunny's Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-purple: #d138ff;
+            --bg-dark: #020205;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
-<!-- Heavitas font -->
-<link href="https://fonts.googleapis.com/css2?family=Heavitas&display=swap" rel="stylesheet">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
-/* ===== GLOBAL ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-body {
-    overflow-x: hidden;
-    background: black;
-    position: relative;
-    color: white;
-}
+        /* --- PROFESSIONAL SPACE BACKGROUND --- */
+        #spaceCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-/* ===== STAR BACKGROUND USING CANVAS ===== */
-#spaceCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            padding: 40px 5%;
+        }
 
-/* ===== HEADER ===== */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 50px;
-    font-family: 'Heavitas', sans-serif;
-    font-size: 36px;
-    color: #5b8c7c;
-    position: relative;
-    z-index: 2;
-    animation: fadeIn 1s ease forwards;
-    opacity: 0;
-}
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
 
-header .title {
-    font-size: 36px;
-}
-    
-/* ===== COLLECTION GRID ===== */
-.collection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 220px));
-    justify-content: center;
-    gap: 30px;
-    padding: 50px;
-    position: relative;
-    z-index: 2;
-}
+        .title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: white;
+        }
 
-/* ===== SLOT STYLES ===== */
-.slot {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    animation: fadeIn 0.6s ease forwards;
-    opacity: 0;
-}
+        /* --- SEARCH & FILTERS --- */
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
 
-.slot img {
-    width: 100%;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
 
-.slot img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-}
+        #searchInput {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
 
-.slot button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    background-color: #1e3f3a;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-}
+        #searchInput:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(209, 56, 255, 0.2);
+        }
 
-.slot button:hover:not([disabled]) {
-    transform: scale(1.05);
-    background-color: #16302c;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
+        .category-dropdown { position: relative; }
 
-.slot button[disabled] {
-    background-color: rgba(50,50,50,0.5);
-    cursor: not-allowed;
-}
+        .drop-btn {
+            padding: 14px 25px;
+            background: var(--neon-purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
 
-/* ===== ANIMATION ===== */
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
+        .drop-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(209, 56, 255, 0.4); }
 
-/* ========================= */
-/* ===== RESPONSIVE ======== */
-/* ========================= */
+        .dropdown-content {
+            position: absolute;
+            top: 120%; right: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 180px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: 0.3s;
+            z-index: 100;
+        }
 
-/* ===== Large Tablets ===== */
-@media (max-width: 1200px) {
-    .collection-grid {
-        padding: 40px;
-        gap: 25px;
-    }
-}
+        .dropdown-content.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-/* ===== Tablets ===== */
-@media (max-width: 992px) {
-    header {
-        font-size: 30px;
-    }
+        .dropdown-content div {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
 
-    .collection-grid {
-        padding: 30px;
-        gap: 20px;
-    }
-}
+        .dropdown-content div:hover { background: var(--neon-purple); }
 
-/* ===== Mobile ===== */
-@media (max-width: 768px) {
+        /* --- COLLECTION GRID --- */
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            perspective: 1000px;
+        }
 
-    header {
-        font-size: 26px;
-        padding: 20px 0;
-    }
+        /* --- THE PROFESSIONAL CARD SLOT --- */
+        .slot {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: var(--border) 0.3s;
+            perspective: 1000px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s forwards;
+        }
 
-    .collection-grid {
-        padding: 20px;
-        gap: 20px;
-    }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
-    .slot {
-        padding: 15px;
-    }
+        .card-container {
+            position: relative;
+            width: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            margin-bottom: 20px;
+        }
 
-    .slot button {
-        width: 100%;
-    }
+        .slot img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
 
-    .category-dropdown button {
-        padding: 8px 14px;
-        font-size: 14px;
-    }
-    
-    .dropdown-content div {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
-    
-/* ===== Small Phones ===== */
-@media (max-width: 480px) {
+        /* Light Reflection Logic */
+        .shine {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 12px;
+            z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
+            mix-blend-mode: overlay;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-    header {
-        font-size: 22px;
-    }
+        .card-container:hover .shine { opacity: 1; }
 
-    .collection-grid {
-        padding: 15px;
-        gap: 15px;
-    }
+        .card-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
 
-    .category-dropdown button {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-    
-    .dropdown-content div {
-        font-size: 13px;
-        padding: 8px;
-    }
-}
-    
-/* ===== SEARCH BAR ===== */
-.search-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 20px;
-    position: relative;
-    z-index: 2;
-}
+        .download-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid var(--neon-purple);
+            color: white;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
 
-.search-container input {
-    padding: 10px 15px;
-    width: 250px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-}
+        .download-btn:hover {
+            background: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(209, 56, 255, 0.4);
+        }
 
-.search-container button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background-color: #1e3f3a;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.search-container button:hover {
-    background-color: #16302c;
-}
-
-/* ===== PROFESSIONAL DROPDOWN ===== */
-
-.category-dropdown {
-    position: relative;
-}
-
-.category-dropdown button {
-    padding: 10px 18px;
-    font-size: 15px;
-    background: linear-gradient(145deg, #1e3f3a, #16302c);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.category-dropdown button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-}
-
-/* Dropdown menu */
-.dropdown-content {
-    position: absolute;
-    top: 110%;
-    right: 0;
-    background: rgba(20, 35, 33, 0.98);
-    backdrop-filter: blur(6px);
-    border-radius: 10px;
-    overflow: hidden;
-    min-width: 160px;
-
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.25s ease;
-}
-
-/* When active */
-.dropdown-content.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-.dropdown-content div {
-    padding: 12px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.dropdown-content div:hover {
-    background: rgba(255,255,255,0.08);
-}
-
-</style>
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; text-align: center; }
+            .controls { justify-content: center; }
+            .search-container { max-width: 100%; }
+        }
+    </style>
 </head>
-
 <body>
 
 <canvas id="spaceCanvas"></canvas>
 
-<header>
-    <div class="title">FULL COLLECTION</div>
+<div class="content-layer">
+    <header>
+        <div class="title">FULL COLLECTION</div>
+        <div class="category-dropdown">
+            <button class="drop-btn" onclick="toggleDropdown()">Categories ▼</button>
+            <div class="dropdown-content" id="dropdownMenu">
+                <div onclick="filterCategory('All')">All Cards</div>
+                <div onclick="filterCategory('Water')">Water</div>
+                <div onclick="filterCategory('Fire')">Fire</div>
+                <div onclick="filterCategory('Dark')">Dark</div>
+                <div onclick="filterCategory('More')">More</div>
+            </div>
+        </div>
+    </header>
 
-    <div class="category-dropdown">
-        <button onclick="toggleDropdown()">Categories ▼</button>
-        <div class="dropdown-content" id="dropdownMenu">
-            <div onclick="filterCategory('All')">All</div>
-            <div onclick="filterCategory('Water')">Water</div>
-            <div onclick="filterCategory('Fire')">Fire</div>
-            <div onclick="filterCategory('Dark')">Dark</div>
-            <div onclick="filterCategory('More')">More</div>
+    <div class="controls">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by card name..." onkeyup="searchCards()">
         </div>
     </div>
-</header>
-    
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search card name...">
-    <button onclick="searchCards()">Search</button>
-</div>
 
-<div class="collection-grid" id="collectionGrid">
-    <!-- Slots will be dynamically generated -->
+    <div class="collection-grid" id="collectionGrid">
+        </div>
 </div>
 
 <script>
-// ===== STAR BACKGROUND =====
+// --- 1. PRO STAR ENGINE ---
 const canvas = document.getElementById('spaceCanvas');
 const ctx = canvas.getContext('2d');
 let stars = [];
 
-function resizeCanvas() {
+function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+window.addEventListener('resize', resize);
+resize();
 
-// Create stars
-function initStars(count = 150) {
-    stars = [];
-    for (let i = 0; i < count; i++) {
+function initStars() {
+    for (let i = 0; i < 200; i++) {
         stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            speed: Math.random() * 0.5 + 0.2
+            x: Math.random() * canvas.width - canvas.width/2,
+            y: Math.random() * canvas.height - canvas.height/2,
+            z: Math.random() * canvas.width,
+            o: Math.random()
         });
     }
 }
-initStars();
 
-// Animate stars
-function animateStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let star of stars) {
-        star.x -= star.speed * 2; // move left
-        star.y -= star.speed;     // move up slightly for diagonal effect
-
-        if (star.x < 0) star.x = canvas.width;
-        if (star.y < 0) star.y = canvas.height;
-
-        ctx.fillStyle = "white";
+function animate() {
+    ctx.fillStyle = "#020205";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+        s.z -= 0.6;
+        if (s.z <= 0) s.z = canvas.width;
+        const x = (s.x / s.z) * canvas.width + canvas.width / 2;
+        const y = (s.y / s.z) * canvas.width + canvas.height / 2;
+        const size = (1 - s.z / canvas.width) * 2;
+        ctx.fillStyle = `rgba(255,255,255,${s.o})`;
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI*2);
+        ctx.arc(x, y, size, 0, Math.PI*2);
         ctx.fill();
-    }
-    requestAnimationFrame(animateStars);
+    });
+    requestAnimationFrame(animate);
 }
-animateStars();
+initStars(); animate();
 
-// ===== COLLECTION DYNAMIC SLOTS =====
-const collectionGrid = document.getElementById('collectionGrid');
-
-// Example card files
+// --- 2. CARD DATA & ENGINE ---
 let cardFiles = [
     { name: "Dragonair", file: "Karta 1.jpg", category: "Water" },
     { name: "Litleo", file: "Karta 2.jpg", category: "Fire" },
@@ -384,138 +311,85 @@ let cardFiles = [
     { name: "Blastoise", file: "Karta 18.jpg", category: "Water" }
 ];
 
-// ===== SLOT CREATION WITH WORKING BUTTON =====
-function addSlot(src) {
-    const slot = document.createElement('div');
-    slot.className = 'slot';
-    
-    if(src) {
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = 'Card';
-        slot.appendChild(img);
-
-        const btn = document.createElement('button');
-        btn.textContent = 'Download';
-        btn.onclick = () => downloadCard(img.src); // use the img.src dynamically
-        slot.appendChild(btn);
-    } else {
-        const div = document.createElement('div');
-        div.style.height = '150px';
-        div.style.display = 'flex';
-        div.style.alignItems = 'center';
-        div.style.justifyContent = 'center';
-        div.textContent = 'IN PROGRESS';
-        slot.appendChild(div);
-
-        const btn = document.createElement('button');
-        btn.disabled = true;
-        btn.textContent = 'Download';
-        slot.appendChild(btn);
-    }
-    collectionGrid.appendChild(slot);
-
-    // Fade-in animation delay
-    setTimeout(() => slot.style.opacity = 1, 100);
+function loadCards(arr) {
+    const grid = document.getElementById('collectionGrid');
+    grid.innerHTML = "";
+    arr.forEach((card, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.style.animationDelay = `${index * 0.05}s`;
+        
+        slot.innerHTML = `
+            <div class="card-container">
+                <img src="${card.file}" alt="${card.name}">
+                <div class="shine"></div>
+            </div>
+            <p class="card-name">${card.name}</p>
+            <button class="download-btn" onclick="downloadCard('${card.file}')">Download</button>
+        `;
+        grid.appendChild(slot);
+        setupCardEffect(slot.querySelector('.card-container'));
+    });
 }
 
-// Load initial cards and fill 10 slots
-loadCards(cardFiles);
+// --- 3. THE PROFESSIONAL INTERACTION ENGINE ---
+function setupCardEffect(card) {
+    const shine = card.querySelector('.shine');
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotX = (y - centerY) / 10;
+        const rotY = (centerX - x) / 10;
+        
+        card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.05)`;
+        shine.style.setProperty('--x', `${(x / rect.width) * 100}%`);
+        shine.style.setProperty('--y', `${(y / rect.height) * 100}%`);
+    });
 
-// ===== DOWNLOAD FUNCTION FIXED =====
-function downloadCard(imgSrc) {
-    // Create an anchor element
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0) rotateY(0) scale(1)`;
+        card.style.transition = "all 0.5s ease";
+    });
+    card.addEventListener('mouseenter', () => card.style.transition = "none" );
+}
+
+function downloadCard(src) {
     const a = document.createElement('a');
-    a.href = imgSrc; // use the actual image source
-    a.download = imgSrc.split('/').pop(); // filename from src
+    a.href = src;
+    a.download = src.split('/').pop();
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 }
 
-// ===== AUTOMATICALLY ADD NEW CARD =====
-function addNewCard(src) {
-    addSlot(src);
-}
+function toggleDropdown() { document.getElementById("dropdownMenu").classList.toggle("active"); }
 
-function loadCards(cardsArray) {
-    collectionGrid.innerHTML = "";
-    cardsArray.forEach(card => {
-        addSlot(card.file, card.name);
-    });
-}
-
-function addSlot(src, cardName) {
-    const slot = document.createElement('div');
-    slot.className = 'slot';
-    
-    if(src) {
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = cardName;
-        slot.appendChild(img);
-
-        const title = document.createElement('p');
-        title.textContent = cardName;
-        title.style.marginBottom = "10px";
-        slot.appendChild(title);
-
-        const btn = document.createElement('button');
-        btn.textContent = 'Download';
-        btn.onclick = () => downloadCard(img.src);
-        slot.appendChild(btn);
-    }
-    collectionGrid.appendChild(slot);
+function filterCategory(cat) {
+    const filtered = cat === 'All' ? cardFiles : cardFiles.filter(c => c.category === cat);
+    loadCards(filtered);
+    toggleDropdown();
 }
 
 function searchCards() {
-    const searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-    const filtered = cardFiles.filter(card =>
-        card.name.toLowerCase().includes(searchValue)
-    );
-
+    const val = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = cardFiles.filter(c => c.name.toLowerCase().includes(val));
     loadCards(filtered);
 }
 
-// ===== DROPDOWN TOGGLE =====
-function toggleDropdown() {
-    const menu = document.getElementById("dropdownMenu");
-    menu.classList.toggle("active");
-}
+// Initial Load
+loadCards(cardFiles);
 
-// ===== FILTER BY CATEGORY =====
-function filterCategory(category) {
-
-    let filtered;
-
-    if (category === "All") {
-        filtered = cardFiles;
-    } else {
-        filtered = cardFiles.filter(card =>
-            card.category === category
-        );
-    }
-
-    loadCards(filtered);
-
-    // close dropdown
-    document.getElementById("dropdownMenu").style.display = "none";
-}
-
-// Close dropdown when clicking outside
-document.addEventListener("click", function(event) {
-    const dropdown = document.querySelector(".category-dropdown");
-    const menu = document.getElementById("dropdownMenu");
-
-    if (!dropdown.contains(event.target)) {
-        menu.classList.remove("active");
+// Close dropdown on click outside
+document.addEventListener("click", (e) => {
+    if (!e.target.closest('.category-dropdown')) {
+        document.getElementById("dropdownMenu").classList.remove("active");
     }
 });
-
 </script>
-
 </body>
 </html>
-
-
