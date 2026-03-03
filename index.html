@@ -1,402 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokemon Card Gallery</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorbunny's Cards | Premium Art</title>
+    <style>
+        :root {
+            --neon-purple: #d571f4;
+            --bg-dark: #13132c;
+            --text-main: #ffffff;
+            --transition-prop: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-<!-- Heavitas font -->
-<link href="https://fonts.googleapis.com/css2?family=Heavitas&display=swap" rel="stylesheet">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
-/* ===== GLOBAL ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+        }
 
-body {
-    overflow-x: hidden;
-    background: black;
-    color: white;
-    position: relative;
-}
+        /* --- THE SPACE ENGINE CANVAS --- */
+        #space {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            display: block;
+        }
 
-/* ===== SPACE BACKGROUND ===== */
-#spaceCanvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
+        /* --- RESPONSIVE UI LAYER --- */
+        .ui-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 5%;
+            pointer-events: none;
+        }
 
-/* ===== PARTICLES ===== */
-.particle {
-    position: absolute;
-    background: rgba(255,255,255,0.3);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: float 10s linear infinite;
-    z-index: 1;
-}
-@keyframes float {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
-}
+        .ui-wrapper * { pointer-events: auto; }
 
-/* ===== HEADER ===== */
-header {
-    background-color: rgba(45, 45, 45, 0.9);
-    padding: 20px 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-    animation: fadeIn 1s ease forwards;
-    opacity: 0;
-}
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
 
-header h1 {
-    font-size: 28px;
-    color: #c7ffd3;
-    font-family: 'Heavitas', sans-serif;
-    letter-spacing: 2px;
-}
+        .logo { width: 45px; height: auto; transition: transform 0.3s ease; }
+        .logo:hover { transform: rotate(10deg); }
 
-/* ===== MAIN LAYOUT ===== */
-.container {
-    display: flex;
-    padding: 60px;
-    gap: 60px;
-    position: relative;
-    z-index: 2;
-}
+        h1 {
+            font-size: clamp(1rem, 4vw, 1.4rem);
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
 
-/* ===== LEFT SIDE ===== */
-.left {
-    flex: 1;
-}
+        /* --- MAIN CONTENT GRID --- */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            flex-grow: 1;
+        }
 
-.left h2 {
-    font-size: 40px;
-    margin-bottom: 20px;
-}
+        .hero-title {
+            color: var(--neon-purple);
+            font-size: clamp(2rem, 8vw, 3.8rem);
+            line-height: 1.05;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-.left p {
-    font-size: 18px;
-    line-height: 2;
-    margin-bottom: 60px;
-    max-width: 500px;
-}
+        .hero-desc {
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
 
-.left h2:nth-of-type(2) {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #c7ffd3;
-    font-family: 'Heavitas', sans-serif;
-}
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-block;
+            padding: 16px 45px;
+            background: var(--neon-purple);
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-prop);
+            box-shadow: 0 10px 25px rgba(209, 56, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
 
-/* ===== CARDS ROW ===== */
-.cards-row {
-    background-color: rgba(45, 45, 45, 0.9);
-    padding: 30px;
-    border-radius: 20px;
-    display: flex;       
-    gap: 20px;
-    width: fit-content;   
-    transition: all 0.5s ease;
-}
+        .btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(209, 56, 255, 0.5);
+            background: #df6cff;
+        }
 
-.cards-row img {
-    width: 100%;
-    max-width: 200px;   /* smaller base size */
-    height: auto;
-    border-radius: 12px;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-}
+        /* --- CARD ZONE --- */
+        .card-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-.cards-row img:hover {
-    transform: scale(1.05) rotate(2deg);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-}
+        .card-wrapper {
+            perspective: 2000px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 340px;
+        }
 
-/* ===== RIGHT SIDE ===== */
-.right {
-    width: 400px;
-    text-align: center;
-}
+        .card-container {
+            position: relative;
+            width: 100%;
+            transform-style: preserve-3d;
+            border-radius: 18px;
+            transition: transform 0.1s ease-out;
+        }
 
-.right h3 {
-    margin-bottom: 20px;
-    font-size: 22px;
-}
+        .card-img {
+            width: 100%;
+            border-radius: 18px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            display: block;
+        }
 
-.latest-card {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 20px;
-    transition: transform 0.5s ease;
-}
+        /* RAY-TRACED REFLECTION */
+        .card-shine {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 18px;
+            z-index: 2;
+            pointer-events: none;
+            background: radial-gradient(
+                circle at var(--shine-x, 50%) var(--shine-y, 50%), 
+                rgba(255,255,255,0.4) 0%, 
+                rgba(255,255,255,0) 55%
+            );
+            mix-blend-mode: overlay;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
 
-.latest-card img {
-    width: 100%;
-    border-radius: 16px;
-    transition: transform 0.5s ease;
-}
+        .card-container:hover .card-shine { opacity: 1; }
 
-.latest-card img:hover {
-    transform: scale(1.05);
-}
+        footer { margin-top: 40px; }
+        footer h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; }
 
-/* ===== FULL COLLECTION BUTTON ===== */
-.change-btn {
-    margin-top: 20px;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 12px;
-    background-color: #1e3f3a;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    letter-spacing: 1px;
-    transition: all 0.4s ease;
-}
+        /* --- RESPONSIVE BREAKPOINTS --- */
+        @media (max-width: 1024px) {
+            main { grid-template-columns: 1fr; text-align: center; gap: 80px; }
+            .hero-desc { margin: 0 auto 40px; }
+            header { justify-content: center; }
+            footer { text-align: center; }
+        }
 
-.change-btn:hover {
-    background-color: #16302c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-}
-
-/* ===== FADE-IN ANIMATION ===== */
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
-/* ========================= */
-/* ===== RESPONSIVE ======== */
-/* ========================= */
-
-/* Make images flexible */
-.cards-row img {
-    width: 100%;
-    max-width: 240px;
-    height: auto;
-}
-
-/* Make right side flexible */
-.right {
-    width: 100%;
-    max-width: 400px;
-}
-
-/* Make cards wrap instead of overflow */
-.cards-row {
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-/* ===== TABLET ===== */
-@media (max-width: 1024px) {
-    .container {
-        padding: 40px;
-        gap: 40px;
-    }
-
-    .left h2 {
-        font-size: 32px;
-    }
-
-    .left p {
-        font-size: 16px;
-    }
-
-    .cards-row img {
-        max-width: 200px;
-    }
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-
-    .container {
-        flex-direction: column;
-        align-items: center;
-        padding: 30px 20px;
-        gap: 50px;
-        text-align: center;
-    }
-
-    .cards-row {
-        flex-wrap: nowrap;
-        justify-content: center;
-    }
-
-    .cards-row img {
-        max-width: 30%;
-    }
-}
-
-/* ===== SMALL PHONES ===== */
-@media (max-width: 480px) {
-
-    .left h2 {
-        font-size: 24px;
-    }
-
-    .cards-row img {
-        max-width: 130px;
-    }
-
-    .change-btn {
-        width: 100%;
-    }
-
-    .cards-row img {
-        max-width: 28%;
-    }
-}
-    
-</style>
+        @media (max-width: 480px) {
+            .ui-wrapper { padding: 30px 20px; }
+            .btn { width: 100%; padding: 15px 0; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- Professional space background -->
-<canvas id="spaceCanvas"></canvas>
+    <canvas id="space"></canvas>
 
-<header>
-    <h1>Scorbunny Cards</h1>
-</header>
+    <div class="ui-wrapper">
+        <header>
+            <img src="Logo.png" alt="Logo" class="logo">
+            <h1>SCORBUNNYS CARDS</h1>
+        </header>
 
-<div class="container">
+        <main>
+            <section class="text-side">
+                <h2 class="hero-title">WE TURN POKEMON CARDS INTO ART!</h2>
+                <p class="hero-desc">Making new card every day. Just go to my channel and comment any card that you want to be turned into art.</p>
+                <a href="https://www.youtube.com/@scorbunnys-cards" target="_blank" class="btn">Youtube</a>
+            </section>
 
-    <!-- LEFT SIDE -->
-    <div class="left">
-        <h2>WELCOME TO THIS PAGE</h2>
-        <p>
-            Here you can find the latest expanded cards<br>
-            from my channel. You can download them for FREE.<br>
-            If you like my content, don't forget to recommend<br>
-            this site to your friends and subscribe.
-        </p>
+            <section class="card-zone">
+                <div class="card-wrapper" id="card-anchor">
+                    <div class="card-container" id="card-ui">
+                        <img src="Karta 14.jpg" alt="Art" class="card-img">
+                        <div class="card-shine" id="shine-layer"></div>
+                    </div>
+                </div>
+                <a href="Collection.html" class="btn">Full collection</a>
+            </section>
+        </main>
 
-        <h2>YOU CAN ALSO FIND CARDS LIKE THIS</h2>
-
-        <div class="cards-row">
-            <img src="Karta 3.jpg" alt="Card 1">
-            <img src="Karta 2.jpg" alt="Card 2">
-            <img src="Karta 1.jpg" alt="Card 3">
-        </div>
+        <footer>
+            <h2>LETS MAKE THIS CARD INTO ART!</h2>
+        </footer>
     </div>
 
-    <!-- RIGHT SIDE -->
-    <div class="right">
-        <h3>LATEST CARD</h3>
-        <div class="latest-card">
-            <img id="latestImage" src="Karta 18.jpg" alt="Latest Card">
-        </div>
+    <script>
+        // --- PRO SPACE ENGINE ---
+        const canvas = document.getElementById('space');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
 
-        <input type="file" id="imageInput" accept="image/*" style="display:none">
-
-        <button class="change-btn" onclick="openCollection()">
-            FULL COLLECTION
-        </button>
-    </div>
-
-</div>
-
-<script>
-// ===== SPACE BACKGROUND =====
-const canvas = document.getElementById('spaceCanvas');
-const ctx = canvas.getContext('2d');
-let stars = [];
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function initStars(count = 150) {
-    stars = [];
-    for (let i = 0; i < count; i++) {
-        stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            speed: Math.random() * 0.5 + 0.2
-        });
-    }
-}
-initStars();
-
-function animateStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let star of stars) {
-        star.x -= star.speed * 2;
-        star.y -= star.speed;
-        if (star.x < 0) star.x = canvas.width;
-        if (star.y < 0) star.y = canvas.height;
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI*2);
-        ctx.fill();
-    }
-    requestAnimationFrame(animateStars);
-}
-animateStars();
-
-// ===== IMAGE CHANGE =====
-function changeImage() {
-    document.getElementById("imageInput").click();
-}
-
-document.getElementById("imageInput").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("latestImage").src = e.target.result;
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 250; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width - canvas.width / 2,
+                    y: Math.random() * canvas.height - canvas.height / 2,
+                    z: Math.random() * canvas.width,
+                    o: Math.random()
+                });
+            }
         }
-        reader.readAsDataURL(file);
-    }
-});
 
-// ===== OPEN COLLECTION PAGE =====
-function openCollection() {
-    window.open("collection.html", "_blank");
-}
+        function draw() {
+            ctx.fillStyle = "#020205";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(s => {
+                s.z -= 0.8;
+                if (s.z <= 0) s.z = canvas.width;
 
-// ===== OPTIONAL: keep small particles =====
-const particlesCount = 50;
-for(let i = 0; i < particlesCount; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    const size = Math.random() * 8 + 2;
-    particle.style.width = size + 'px';
-    particle.style.height = size + 'px';
-    particle.style.left = Math.random() * window.innerWidth + 'px';
-    particle.style.top = Math.random() * window.innerHeight + 'px';
-    particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
-    document.body.appendChild(particle);
-}
-</script>
+                const x = (s.x / s.z) * canvas.width + canvas.width / 2;
+                const y = (s.y / s.z) * canvas.width + canvas.height / 2;
+                const size = (1 - s.z / canvas.width) * 2.5;
 
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.o})`;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        draw();
+
+        // --- INTERACTIVE LIGHTING ---
+        const cardUI = document.getElementById('card-ui');
+        const anchor = document.getElementById('card-anchor');
+        const shine = document.getElementById('shine-layer');
+
+        const handleInteraction = (e) => {
+            const rect = anchor.getBoundingClientRect();
+            // Works for both Mouse and Touch
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            
+            if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotX = (y - centerY) / 12;
+                const rotY = (centerX - x) / 12;
+
+                const shineX = (x / rect.width) * 100;
+                const shineY = (y / rect.height) * 100;
+
+                cardUI.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.05)`;
+                shine.style.setProperty('--shine-x', `${shineX}%`);
+                shine.style.setProperty('--shine-y', `${shineY}%`);
+            }
+        };
+
+        window.addEventListener('mousemove', handleInteraction);
+        window.addEventListener('touchmove', handleInteraction);
+
+        anchor.addEventListener('mouseleave', () => {
+            cardUI.style.transition = "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+            cardUI.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        });
+
+        anchor.addEventListener('mouseenter', () => {
+            cardUI.style.transition = "none";
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
