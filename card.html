@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card View</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --neon-purple: #d138ff;
+    --neon-pink: #ff7be5;
+    --bg-dark: #020205;
+    --glass: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+}
+
+/* BASE */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #0a0a12, #020205);
+    color: white;
+    overflow-x: hidden;
+}
+
+/* CENTER FIX */
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* LAYOUT */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 60px 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+}
+
+/* SLIDER */
+.slider {
+    position: relative;
+    transition: 0.3s;
+}
+
+.slider img {
+    width: 100%;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    transition: 0.4s;
+}
+
+.slider img:hover {
+    transform: scale(1.03);
+}
+
+/* ARROWS */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 26px;
+    background: rgba(0,0,0,0.6);
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.arrow:hover {
+    background: var(--neon-purple);
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+.left { left: 15px; }
+.right { right: 15px; }
+
+/* INFO SIDE */
+.title {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: var(--neon-pink);
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.desc {
+    color: #aaa;
+    line-height: 1.7;
+    margin-bottom: 50px;
+    max-width: 500px;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+/* BUTTONS */
+.btn {
+    display: block;
+    width: 220px;
+    padding: 16px;
+    margin-bottom: 25px;
+    text-align: center;
+    border-radius: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff8df5, #d138ff);
+    color: white;
+    border: none;
+    letter-spacing: 2px;
+    transition: 0.3s;
+    box-shadow: 0 0 25px rgba(209,56,255,0.5);
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 0 40px rgba(255,120,255,0.8);
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 20px;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    position: fixed;
+    top: 25px;
+    right: 40px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 20;
+}
+
+.back-btn:hover {
+    background: var(--neon-purple);
+    box-shadow: 0 0 20px var(--neon-purple);
+}
+
+/* THUMBNAILS */
+.thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.thumbs img {
+    width: 70px;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.thumbs img.active {
+    opacity: 1;
+    outline: 2px solid var(--neon-purple);
+}
+
+/* BACKGROUND */
+#bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+}
+
+/* RESPONSIVE */
+@media(max-width: 900px){
+    .container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="back-btn" onclick="goBack()">← BACK</div>
+
+<div class="wrapper">
+<div class="container">
+
+    <!-- LEFT -->
+    <div class="slider">
+        <img id="slideImage" onclick="openModal()">
+
+        <div class="arrow left" onclick="prev()">‹</div>
+        <div class="arrow right" onclick="next()">›</div>
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+        <div class="subtitle">EXTENDED ART</div>
+        <div class="title" id="cardTitle"></div>
+
+        <div class="desc">
+            This card was made by the most tallented artist.  
+            Designed with premium extended artwork and high visual quality.  
+            Perfect for collectors or display :D.
+        </div>
+
+        <div class="section-title">FULL PRODUCT:</div>
+        <div class="btn">VINTED</div>
+
+        <div class="section-title">DIGITAL PRINT:</div>
+        <div class="btn">ETSY</div>
+    </div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="closeModal()">
+    <img id="modalImg">
+</div>
+
+<script>
+// GET NAME FROM URL
+const params = new URLSearchParams(window.location.search);
+let name = params.get("name");
+
+
+// DATABASE
+const products = {
+    "Charizard": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Umbreon": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Dragonair": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Litleo": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Nidoking": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Munna": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Lucario": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Infernape": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Tatsugiri": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Mudsdale": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Noivern": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Wishiwashi": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Koffing": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Lycanroc": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Charizard: Prismatic": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Iono": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Gengar": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Blastoise": ["Image1.jpg","Image2.jpg","Image3.jpg"],
+    "Default": ["Image1.jpg","Image2.jpg","Image3.jpg"]
+};
+
+const images = products[name] || products["Default"];
+
+let index = 0;
+
+// SET TITLE
+document.getElementById("cardTitle").innerText = name;
+
+// IMAGE
+const mainImg = document.getElementById("slideImage");
+mainImg.src = images[index];
+
+// SLIDER
+function next() {
+    index = (index + 1) % images.length;
+    update();
+}
+
+function prev() {
+    index = (index - 1 + images.length) % images.length;
+    update();
+}
+
+function update() {
+    mainImg.style.opacity = 0;
+    setTimeout(() => {
+        mainImg.src = images[index];
+        mainImg.style.opacity = 1;
+        updateThumbs();
+    }, 150);
+}
+
+// MODAL
+function openModal() {
+    document.getElementById("modal").style.display = "flex";
+    document.getElementById("modalImg").src = images[index];
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+// THUMBNAILS
+const thumbContainer = document.createElement("div");
+thumbContainer.className = "thumbs";
+
+images.forEach((img, i) => {
+    const el = document.createElement("img");
+    el.src = img;
+
+    el.onclick = () => {
+        index = i;
+        update();
+    };
+
+    thumbContainer.appendChild(el);
+});
+
+document.querySelector(".slider").appendChild(thumbContainer);
+
+function updateThumbs() {
+    document.querySelectorAll(".thumbs img").forEach((el, i) => {
+        el.classList.toggle("active", i === index);
+    });
+}
+updateThumbs();
+
+// PARALLAX
+const slider = document.querySelector(".slider");
+
+slider.addEventListener("mousemove", (e) => {
+    const rect = slider.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+    slider.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+});
+
+slider.addEventListener("mouseleave", () => {
+    slider.style.transform = "rotateY(0deg) rotateX(0deg)";
+});
+
+// BACK BUTTON
+function goBack() {
+    window.location.href = "collection.html";
+}
+
+// BACKGROUND
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let stars = [];
+for (let i = 0; i < 120; i++) {
+    stars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: Math.random()*2,
+        speed: Math.random()*0.5
+    });
+}
+
+function animate() {
+    ctx.fillStyle = "#020205";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    stars.forEach(s=>{
+        s.y += s.speed;
+        if(s.y > canvas.height) s.y = 0;
+
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
+        ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
