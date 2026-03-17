@@ -248,6 +248,9 @@
 </div>
 
 <script>
+
+<!-- EVERYTHING ABOVE STAYS THE SAME -->
+
 // --- 1. PRO STAR ENGINE ---
 const canvas = document.getElementById('spaceCanvas');
 const ctx = canvas.getContext('2d');
@@ -303,15 +306,12 @@ let cardFiles = [
     { name: "Wishiwashi", file: "Karta 10.jpg", category: "Water" },
     { name: "Koffing", file: "Karta 11.jpg", category: "Dark" },
     { name: "Lycanroc", file: "Karta 12.jpg", category: "More" },
-    { name: "Charizard", file: "Karta 13.jpg", category: "Fire" },
+    { name: "Charizard: 151", file: "Karta 13.jpg", category: "Fire" },
     { name: "Umbreon", file: "Karta 14.jpg", category: "Dark" },
-    { name: "Charizard", file: "Karta 15.jpg", category: "Fire" },
+    { name: "Charizard: Prismatic", file: "Karta 15.jpg", category: "Fire" },
     { name: "Iono", file: "Karta 16.jpg", category: "More" },
     { name: "Gengar", file: "Karta 17.jpg", category: "Dark" },
-    { name: "Blastoise", file: "Karta 18.jpg", category: "Water" },
-    { name: "Entei", file: "Karta 19.jpg", category: "Fire" },
-    { name: "Metagross", file: "Karta 20.jpg", category: "More" },
-    { name: "Zeraora", file: "Karta 21.jpg", category: "More" },
+    { name: "Blastoise", file: "Karta 18.jpg", category: "Water" }
 ];
 
 function loadCards(arr) {
@@ -328,11 +328,16 @@ function loadCards(arr) {
                 <div class="shine"></div>
             </div>
             <p class="card-name">${card.name}</p>
-            <button class="download-btn" onclick="downloadCard('${card.file}')">Download</button>
+            <button class="download-btn" onclick="openCardPage('${card.name}')">OPEN</button>
         `;
         grid.appendChild(slot);
         setupCardEffect(slot.querySelector('.card-container'));
     });
+}
+
+/* ✅ ONLY THIS FUNCTION REMAINS */
+function openCardPage(name) {
+    window.location.href = `card.html?name=${encodeURIComponent(name)}`;
 }
 
 // --- 3. THE PROFESSIONAL INTERACTION ENGINE ---
@@ -393,9 +398,7 @@ document.addEventListener("click", (e) => {
         document.getElementById("dropdownMenu").classList.remove("active");
     }
 });
+
 </script>
 </body>
 </html>
-
-
-
